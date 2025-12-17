@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prepare": "husky install"
-  },
+    "prepare": "husky install",
+    "dev": "npm --prefix ./foodontracks run dev",
+    "start": "npm --prefix ./foodontracks run start"
+  ,
   "devDependencies": {
     "husky": "^8.0.0"
   }
