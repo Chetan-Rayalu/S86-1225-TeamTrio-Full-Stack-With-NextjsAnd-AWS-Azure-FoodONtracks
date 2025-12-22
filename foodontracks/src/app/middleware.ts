@@ -7,6 +7,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev_jwt_secret_change_me';
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Public routes — anyone can access
+  if (pathname === '/' || pathname.startsWith('/login')) {
+    return NextResponse.next();
+  }
+
   // Protect admin and users API routes
   if (pathname.startsWith('/api/admin') || pathname.startsWith('/api/users')) {
     const authHeader = req.headers.get('authorization');
@@ -39,9 +44,27 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  // Protect page routes (dashboard, users pages)
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/users')) {
+    const token = req.cookies.get('token')?.value;
+
+    if (!token) {
+      const loginUrl = new URL('/login', req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    try {
+      jwt.verify(token, JWT_SECRET);
+      return NextResponse.next();
+    } catch (err) {
+      const loginUrl = new URL('/login', req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/api/admin/:path*', '/api/users/:path*'],
+  matcher: ['/dashboard/:path*', '/users/:path*', '/api/admin/:path*', '/api/users/:path*'],
 };

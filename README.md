@@ -89,6 +89,167 @@ foodontracks/
 
 ---
 
+## 🗺️ Page Routing and Dynamic Routes
+
+FoodONtracks uses **Next.js 13+ App Router** for file-based routing with support for public pages, protected routes, and dynamic parameters.
+
+### Route Map
+
+```
+app/
+├── page.tsx                    → / (Home - public)
+├── login/
+│   └── page.tsx               → /login (Public)
+├── dashboard/
+│   └── page.tsx               → /dashboard (Protected)
+├── users/
+│   ├── page.tsx               → /users (Protected - list)
+│   └── [id]/page.tsx          → /users/[id] (Protected - dynamic)
+├── layout.tsx                 → Global layout with navigation
+├── not-found.tsx              → Custom 404 error page
+└── middleware.ts              → Auth middleware for protected routes
+```
+
+### Public Routes (No Login Required)
+
+| Route | File | Purpose |
+|-------|------|---------|
+| `/` | `app/page.tsx` | Home page with welcome message and navigation |
+| `/login` | `app/login/page.tsx` | User authentication form |
+| `/404` | `app/not-found.tsx` | Custom error page for undefined routes |
+
+### Protected Routes (Requires JWT Token)
+
+| Route | File | Purpose |
+|-------|------|---------|
+| `/dashboard` | `app/dashboard/page.tsx` | User dashboard (auth required) |
+| `/users` | `app/users/page.tsx` | List all users (auth required) |
+| `/users/[id]` | `app/users/[id]/page.tsx` | Dynamic user profile page (auth required) |
+
+### Authentication Flow
+
+```
+User visits /login
+      ↓
+Enters email & password
+      ↓
+POST /api/auth/login
+      ↓
+Token stored in HTTP-only cookie
+      ↓
+Redirected to /dashboard
+      ↓
+Middleware validates token for protected routes
+      ↓
+User can access /dashboard, /users, /users/[id]
+```
+
+### Middleware Protection
+
+The `middleware.ts` file enforces access control:
+
+```typescript
+// Public routes — no restrictions
+/ , /login
+
+// Protected page routes — require JWT in cookies
+/dashboard, /users, /users/:path*
+
+// Protected API routes — require JWT in Authorization header
+/api/admin/:path*, /api/users/:path*
+```
+
+**Redirect behavior**: Unauthenticated users accessing protected routes are redirected to `/login`.
+
+### Dynamic Routes & SEO
+
+The `/users/[id]` route demonstrates scalable dynamic routing:
+
+```typescript
+// Single file handles unlimited user profiles
+app/users/[id]/page.tsx
+
+// Example URLs:
+/users/1  → User profile for ID 1
+/users/2  → User profile for ID 2
+/users/42 → User profile for ID 42
+```
+
+**Benefits**:
+- **Scalability**: No need to create individual route files for each user
+- **SEO**: Each user profile gets a unique, indexable URL
+- **Breadcrumbs**: Navigation hierarchy improves UX and SEO ranking
+- **Performance**: Server-side rendering improves index-ability
+
+### Navigation & Layout
+
+All pages inherit the global layout (`app/layout.tsx`) with:
+
+```
+┌─────────────────────────────────────────────┐
+│  🍔 FoodONtracks │ Home │ Login │ Dashboard │ Users │
+└─────────────────────────────────────────────┘
+       ↓
+   [Page Content]
+       ↓
+┌─────────────────────────────────────────────┐
+│  © 2025 FoodONtracks. All rights reserved.  │
+└─────────────────────────────────────────────┘
+```
+
+### Testing Routes
+
+**Step 1**: Start the dev server
+```bash
+npm run dev
+```
+
+**Step 2**: Test public routes (no login)
+```
+http://localhost:3000/              → Home page ✓
+http://localhost:3000/login         → Login page ✓
+http://localhost:3000/fake-route    → 404 page ✓
+```
+
+**Step 3**: Test protected routes (login required)
+```
+1. Visit http://localhost:3000/login
+2. Enter any email and password
+3. Click "Login" → Redirected to /dashboard ✓
+4. Explore:
+   http://localhost:3000/dashboard  → Dashboard ✓
+   http://localhost:3000/users      → Users list ✓
+   http://localhost:3000/users/1    → User 1 profile ✓
+   http://localhost:3000/users/2    → User 2 profile ✓
+```
+
+**Step 4**: Test access denial
+```
+1. Clear browser cookies (or use incognito window)
+2. Try: http://localhost:3000/dashboard
+3. Redirected to /login ✓
+```
+
+### Breadcrumbs for Navigation
+
+Dynamic routes include breadcrumbs for improved UX and SEO:
+
+```
+Home / Dashboard / User 1
+Home / Dashboard / User 2
+```
+
+Users always know where they are in the application, and search engines can understand your site hierarchy.
+
+### Error Handling
+
+**Custom 404 Page** (`app/not-found.tsx`):
+- User-friendly error message
+- Quick links to common pages (Home, Dashboard, Users)
+- Professional styling with gradient background
+
+---
+
 ## ⚙️ Setup Instructions
 
 ### 1️⃣ Install dependencies
