@@ -1,10 +1,12 @@
-﻿import type { Metadata } from 'next';
-import { LayoutWrapper } from '@/components';
-import './globals.css';
+﻿import type { Metadata } from "next";
+import { LayoutWrapper } from "@/components";
+import { AuthProvider } from "@/context/AuthContext";
+import { UIProvider } from "@/context/UIContext";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'FoodONtracks - Food Traceability System',
-  description: 'A comprehensive batch traceability system for food management',
+  title: "FoodONtracks - Food Traceability System",
+  description: "A comprehensive batch traceability system for food management",
 };
 
 export default function RootLayout({
@@ -15,7 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-50">
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <AuthProvider>
+          <UIProvider>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </UIProvider>
+        </AuthProvider>
       </body>
     </html>
   );
