@@ -1,7 +1,5 @@
 ﻿import type { Metadata } from "next";
-import { LayoutWrapper } from "@/components";
-import { AuthProvider } from "@/context/AuthContext";
-import { UIProvider } from "@/context/UIContext";
+import Providers from "@/components/Providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,12 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
-        <AuthProvider>
-          <UIProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </UIProvider>
-        </AuthProvider>
+      <body className="bg-gray-50 dark:bg-gray-900">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
