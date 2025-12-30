@@ -89,6 +89,78 @@ Each food batch receives a unique Batch ID, and suppliers, kitchens, vendors, an
 🧪 **Testing**: See [TESTING_GUIDE.md](foodontracks/src/app/lib/TESTING_GUIDE.md) for complete testing instructions
 📚 **Demo**: Use Chrome DevTools Network throttling (Slow 3G) to see loading states
 
+### 🔐 Role-Based Access Control (RBAC)
+✅ **Comprehensive security model with role-based permissions**
+
+**Role Hierarchy & Permissions**:
+
+| Role | Level | Permissions |
+|------|-------|-------------|
+| **ADMIN** | 3 | Full system access - can create, read, update, delete, and manage all resources |
+| **RESTAURANT_OWNER** | 2 | Can manage their own restaurant, menu items, and view orders |
+| **CUSTOMER** | 1 | Basic user access - can browse, order, and review |
+
+**Permission Matrix**:
+
+| Resource | ADMIN | RESTAURANT_OWNER | CUSTOMER |
+|----------|-------|------------------|----------|
+| **Users** | Create, Read, Update, Delete, Manage | Read | Read (own), Update (own) |
+| **Restaurants** | All | Read, Update (own) | Read |
+| **Menu Items** | All | Create, Read, Update, Delete (own) | Read |
+| **Orders** | All | Read, Update | Create, Read, Update (own) |
+| **Reviews** | All | Read | Create, Read, Update, Delete (own) |
+| **Addresses** | All | Read | Create, Read, Update, Delete (own) |
+| **Transactions** | All | Read | Read (own) |
+
+**Key Features**:
+- 🔒 **JWT-Based Authentication**: Role stored in token payload
+- 🛡️ **API Route Protection**: Middleware enforces permissions on all endpoints
+- 🎨 **UI Access Control**: Conditional rendering based on permissions
+- 📊 **Audit Logging**: Every access decision logged with allow/deny status
+- 🔍 **Security Monitoring**: Track suspicious activity and denied attempts
+
+**Implementation**:
+```typescript
+// API Route Protection
+export const DELETE = withRbac(
+  async (request) => {
+    // Handler code
+  },
+  { resource: 'users', permission: 'delete' }
+);
+
+// UI Permission Checks
+const { can } = usePermissions();
+if (can('delete', 'users')) {
+  return <DeleteButton />;
+}
+```
+
+**Audit Logs Example**:
+```
+✅ ALLOWED - User 1 (ADMIN) attempted to manage users at /api/users - Permission granted (IP: 192.168.1.1)
+❌ DENIED - User 2 (CUSTOMER) attempted to delete users at /api/users - Insufficient permissions (IP: 192.168.1.2)
+```
+
+**Security Benefits**:
+- ✅ **Defense in Depth**: Backend AND frontend validation
+- ✅ **Least Privilege**: Users only get minimum required permissions
+- ✅ **Auditability**: Complete access log for compliance
+- ✅ **Scalability**: Easy to add new roles or permissions
+- ✅ **Maintainability**: Centralized permission configuration
+
+📚 **Demo**: Visit `/rbac-demo` to see role-based UI in action  
+🧪 **Testing**: Run `npx ts-node scripts/test_rbac.ts` to see permission checks  
+📖 **Admin Logs**: Visit `/api/admin/rbac-logs` (Admin only)
+
+**Files**:
+- [roles.ts](foodontracks/src/config/roles.ts) - Permission configuration
+- [rbac.ts](foodontracks/src/middleware/rbac.ts) - API middleware
+- [usePermissions.ts](foodontracks/src/hooks/usePermissions.ts) - UI hook
+- [rbacLogger.ts](foodontracks/src/middleware/rbacLogger.ts) - Audit logging
+
+---
+
 ### 🔐 JWT Access & Refresh Tokens
 ✅ **Secure authentication with automatic token refresh**
 - **Access Tokens**: Short-lived (15 minutes) for API requests
