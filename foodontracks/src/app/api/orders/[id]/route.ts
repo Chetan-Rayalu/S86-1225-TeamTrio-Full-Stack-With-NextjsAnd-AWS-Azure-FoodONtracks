@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { updateOrderSchema } from "@/lib/schemas/orderSchema";
+import { orderUpdateSchema } from "@/lib/schemas/orderSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
 
 // GET /api/orders/[id]
+<<<<<<< HEAD
 export const GET = withLogging(async (
   req: NextRequest,
+=======
+export async function GET(
+  _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
@@ -75,8 +80,8 @@ export const PATCH = withLogging(async (
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(updateOrderSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(orderUpdateSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 
@@ -89,17 +94,32 @@ export const PATCH = withLogging(async (
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const { status, specialInstructions, deliveryPersonId } = validationResult.data;
+    const { status, specialInstructions, deliveryPersonId } =
+      validationResult.data;
 
     // Update order and create tracking event in transaction
     const order = await prisma.$transaction(async (tx) => {
       const updatedOrder = await tx.order.update({
         where: { id: orderId },
         data: {
+<<<<<<< HEAD
           ...(status ? { status } : {}),
           ...(specialInstructions !== undefined ? { specialInstructions } : {}),
           ...(deliveryPersonId !== undefined ? { deliveryPersonId } : {}),
           ...(status === "DELIVERED" && !existingOrder.actualDeliveryTime ? { actualDeliveryTime: new Date() } : {}),
+=======
+          ...(status && { status }),
+          ...(specialInstructions !== undefined && { specialInstructions }),
+          ...(deliveryPersonId !== undefined && {
+            deliveryPerson: deliveryPersonId
+              ? { connect: { id: parseInt(deliveryPersonId) } }
+              : { disconnect: true },
+          }),
+          ...(status === "DELIVERED" &&
+            !existingOrder.actualDeliveryTime && {
+              actualDeliveryTime: new Date(),
+            }),
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
         },
         include: {
           orderItems: {
@@ -152,8 +172,8 @@ export const PUT = withLogging(async (
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(updateOrderSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(orderUpdateSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 
@@ -166,7 +186,8 @@ export const PUT = withLogging(async (
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const { status, specialInstructions, deliveryPersonId } = validationResult.data;
+    const { status, specialInstructions, deliveryPersonId } =
+      validationResult.data;
 
     // Update order and create tracking event in transaction
     const order = await prisma.$transaction(async (tx) => {
@@ -175,10 +196,15 @@ export const PUT = withLogging(async (
         data: {
           ...(status && { status }),
           ...(specialInstructions !== undefined && { specialInstructions }),
-          ...(deliveryPersonId !== undefined && { deliveryPersonId }),
-          ...(status === "DELIVERED" && !existingOrder.actualDeliveryTime && {
-            actualDeliveryTime: new Date(),
+          ...(deliveryPersonId !== undefined && {
+            deliveryPerson: deliveryPersonId
+              ? { connect: { id: parseInt(deliveryPersonId) } }
+              : { disconnect: true },
           }),
+          ...(status === "DELIVERED" &&
+            !existingOrder.actualDeliveryTime && {
+              actualDeliveryTime: new Date(),
+            }),
         },
         include: {
           orderItems: {
@@ -213,11 +239,19 @@ export const PUT = withLogging(async (
       { status: 500 }
     );
   }
+<<<<<<< HEAD
 });
 
 // DELETE /api/orders/[id] - Cancel order
 export const DELETE = withLogging(async (
   req: NextRequest,
+=======
+}
+
+// DELETE /api/orders/[id] - Cancel order
+export async function DELETE(
+  _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {

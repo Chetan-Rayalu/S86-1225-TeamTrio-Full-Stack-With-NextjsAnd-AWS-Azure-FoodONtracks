@@ -1,28 +1,83 @@
-# Use official Node.js image
-FROM node:20-alpine
+# Multi-stage Dockerfile for Next.js FoodONtracks Application
+# Optimized for production deployment on AWS ECS / Azure App Service
 
-# Set working directory
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files
 COPY package*.json ./
-RUN npm install
+COPY prisma ./prisma/
 
-# Copy project files and build the app
+# Install ALL dependencies (including devDependencies for Prisma)
+RUN npm ci && \
+    npm cache clean --force
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Set environment variables for build
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Generate Prisma Client (in case it's needed for build)
+RUN npx prisma generate
+
+# Build Next.js application
 RUN npm run build
 
-# Expose the app port
-EXPOSE 3000
+# Stage 3: Runner (Production)
+FROM node:20-alpine AS runner
+RUN apk add --no-cache libc6-compat openssl curl
 
-# Start the app
-CMD ["npm", "run", "start"]
+WORKDIR /app
 
-# Create and setup the database
-RUN apk add --no-cache postgresql-client \
-    && psql -h localhost -U postgres -c "CREATE DATABASE foodontracks;" \
-    && psql -h localhost -U postgres -d foodontracks -f /app/db/schema.sql \
-    && psql -h localhost -U postgres -d foodontracks -c "\l" \
-    && rm -f /app/db/schema.sql \
-    && echo "Database setup completed." \
-    && psql -h localhost -U postgres -d foodontracks -c "\q"
+# Create non-root user for security
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV NEXT_PUBLIC_APP_URL=https://foodontracks.local
+ENV NEXT_PUBLIC_API_URL=https://api.foodontracks.local
+
+# Copy necessary files from builder
+COPY --from=builder /app/next.config.* ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/prisma ./prisma
+
+# Copy built application
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy node_modules (including Prisma Client)
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# Create directory for SSL certificates (will be mounted as volume)
+RUN mkdir -p /app/certs
+
+# Switch to non-root user
+USER nextjs
+
+# Expose ports (3000 for HTTP, 443 for HTTPS)
+EXPOSE 3000 443
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Start the application
+CMD ["node", "server.js"]

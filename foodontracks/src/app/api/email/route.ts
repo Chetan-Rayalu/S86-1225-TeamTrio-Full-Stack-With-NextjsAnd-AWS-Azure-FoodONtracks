@@ -1,11 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { sendEmail, isValidEmail, getEmailStats } from "@/app/lib/emailService";
+<<<<<<< HEAD
 import {
   createSuccessResponse,
   createErrorResponse,
 } from "@/app/lib/responseHandler";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
+=======
+import { sendSuccess, sendError } from "@/lib/responseHandler";
+import { ERROR_CODES } from "@/lib/errorCodes";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 import {
   welcomeEmailTemplate,
   orderConfirmationEmailTemplate,
@@ -34,17 +39,21 @@ export const POST = withLogging(async (req: NextRequest) => {
 
     // Validate required fields
     if (!to) {
-      return NextResponse.json(
-        createErrorResponse("Missing 'to' field", "VALIDATION_ERROR"),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Missing 'to' field",
+        undefined,
+        400
       );
     }
 
     // Validate email format
     if (!isValidEmail(to)) {
-      return NextResponse.json(
-        createErrorResponse("Invalid email address format", "VALIDATION_ERROR"),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Invalid email address format",
+        undefined,
+        400
       );
     }
 
@@ -93,24 +102,22 @@ export const POST = withLogging(async (req: NextRequest) => {
           break;
 
         default:
-          return NextResponse.json(
-            createErrorResponse(
-              `Unknown template: ${template}. Available templates: welcome, order-confirmation, password-reset, order-status, payment-confirmation, notification`,
-              "INVALID_TEMPLATE"
-            ),
-            { status: 400 }
+          return sendError(
+            ERROR_CODES.VALIDATION_ERROR,
+            `Unknown template: ${template}. Available templates: welcome, order-confirmation, password-reset, order-status, payment-confirmation, notification`,
+            undefined,
+            400
           );
       }
     }
 
     // Validate we have content
     if (!emailSubject || !emailHtml) {
-      return NextResponse.json(
-        createErrorResponse(
-          "Missing email content. Provide either 'subject' and 'message', or 'template' and 'templateData'",
-          "VALIDATION_ERROR"
-        ),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Missing email content. Provide either 'subject' and 'message', or 'template' and 'templateData'",
+        undefined,
+        400
       );
     }
 
@@ -125,29 +132,27 @@ export const POST = withLogging(async (req: NextRequest) => {
     });
 
     if (result.success) {
-      return NextResponse.json(
-        createSuccessResponse(
-          {
-            messageId: result.messageId,
-            to,
-            subject: emailSubject,
-          },
-          "Email sent successfully"
-        ),
-        { status: 200 }
+      return sendSuccess(
+        {
+          messageId: result.messageId,
+          to,
+          subject: emailSubject,
+        },
+        "Email sent successfully",
+        200
       );
     } else {
-      return NextResponse.json(
-        createErrorResponse(
-          result.error || "Failed to send email",
-          "EMAIL_SEND_FAILED"
-        ),
-        { status: 500 }
+      return sendError(
+        ERROR_CODES.EMAIL_SERVICE_ERROR,
+        result.error || "Failed to send email",
+        undefined,
+        500
       );
     }
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
+<<<<<<< HEAD
     logger.error("email_api_error", { error: errorMessage });
     return NextResponse.json(
       createErrorResponse(
@@ -156,6 +161,14 @@ export const POST = withLogging(async (req: NextRequest) => {
         errorMessage
       ),
       { status: 500 }
+=======
+    console.error("Email API error:", errorMessage);
+    return sendError(
+      ERROR_CODES.INTERNAL_SERVER_ERROR,
+      "Failed to process email request",
+      errorMessage,
+      500
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
     );
   }
 });
@@ -168,31 +181,28 @@ export const GET = withLogging(async () => {
   try {
     const stats = await getEmailStats();
 
-    return NextResponse.json(
-      createSuccessResponse(
-        {
-          ...stats,
-          availableTemplates: [
-            "welcome",
-            "order-confirmation",
-            "password-reset",
-            "order-status",
-            "payment-confirmation",
-            "notification",
-          ],
-          sandboxMode: process.env.AWS_SES_SANDBOX === "true",
-        },
-        "Email service configuration retrieved"
-      ),
-      { status: 200 }
+    return sendSuccess(
+      {
+        ...stats,
+        availableTemplates: [
+          "welcome",
+          "order-confirmation",
+          "password-reset",
+          "order-status",
+          "payment-confirmation",
+          "notification",
+        ],
+        sandboxMode: process.env.AWS_SES_SANDBOX === "true",
+      },
+      "Email service configuration retrieved",
+      200
     );
   } catch {
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to retrieve email configuration",
-        "CONFIG_ERROR"
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.INTERNAL_SERVER_ERROR,
+      "Failed to retrieve email configuration",
+      undefined,
+      500
     );
   }
 });

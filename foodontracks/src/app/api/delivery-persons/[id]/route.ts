@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { updateDeliveryPersonSchema } from "@/lib/schemas/deliveryPersonSchema";
+import { deliveryPersonUpdateSchema } from "@/lib/schemas/deliveryPersonSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
 
 // GET /api/delivery-persons/[id] - Get specific delivery person
+<<<<<<< HEAD
 export const GET = withLogging(async (
   request: NextRequest,
+=======
+export async function GET(
+  _request: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
@@ -87,8 +92,8 @@ export const PUT = withLogging(async (
     const body = await request.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(updateDeliveryPersonSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(deliveryPersonUpdateSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 
@@ -153,8 +158,13 @@ export const PUT = withLogging(async (
 });
 
 // DELETE /api/delivery-persons/[id] - Delete delivery person
+<<<<<<< HEAD
 export const DELETE = withLogging(async (
   request: NextRequest,
+=======
+export async function DELETE(
+  _request: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
@@ -192,7 +202,7 @@ export const DELETE = withLogging(async (
       where: {
         deliveryPersonId: deliveryPersonId,
         status: {
-          in: ["PENDING", "CONFIRMED", "PREPARING", "OUT_FOR_DELIVERY"],
+          in: ["PENDING", "CONFIRMED", "PREPARING", "PICKED_UP"],
         },
       },
     });

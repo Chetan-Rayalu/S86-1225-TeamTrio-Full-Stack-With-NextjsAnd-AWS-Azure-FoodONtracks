@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
-import { createOrderSchema } from "@/lib/schemas/orderSchema";
+import { orderSchema } from "@/lib/schemas/orderSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
@@ -107,8 +107,8 @@ export const POST = withLogging(async (req: NextRequest) => {
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(createOrderSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(orderSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 

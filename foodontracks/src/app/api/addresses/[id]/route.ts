@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { updateAddressSchema } from "@/lib/schemas/addressSchema";
+import { addressUpdateSchema } from "@/lib/schemas/addressSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
 
 // GET /api/addresses/[id]
+<<<<<<< HEAD
 export const GET = withLogging(async (
   req: NextRequest,
+=======
+export async function GET(
+  _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   let idStr: string | undefined = undefined;
@@ -62,9 +67,16 @@ export const PUT = withLogging(async (
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(updateAddressSchema, body);
+    const validationResult = validateData(addressUpdateSchema, body);
     if (!validationResult.success) {
       return NextResponse.json(validationResult, { status: 400 });
+    }
+
+    if (!validationResult.data) {
+      return NextResponse.json(
+        { error: "Validation data is missing" },
+        { status: 400 }
+      );
     }
 
     const address = await prisma.address.update({
@@ -86,8 +98,13 @@ export const PUT = withLogging(async (
 });
 
 // DELETE /api/addresses/[id]
+<<<<<<< HEAD
 export const DELETE = withLogging(async (
   req: NextRequest,
+=======
+export async function DELETE(
+  _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   let idStr: string | undefined = undefined;

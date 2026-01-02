@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createAddressSchema } from "@/lib/schemas/addressSchema";
+import { addressCreateSchema } from "@/lib/schemas/addressSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
@@ -39,8 +39,8 @@ export const POST = withLogging(async (req: NextRequest) => {
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(createAddressSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(addressCreateSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createDeliveryPersonSchema } from "@/lib/schemas/deliveryPersonSchema";
+import { deliveryPersonSchema } from "@/lib/schemas/deliveryPersonSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
@@ -59,12 +59,19 @@ export const POST = withLogging(async (req: NextRequest) => {
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(createDeliveryPersonSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(deliveryPersonSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 
-    const { name, email, phoneNumber, vehicleType, vehicleNumber, isAvailable } = validationResult.data;
+    const {
+      name,
+      email,
+      phoneNumber,
+      vehicleType,
+      vehicleNumber,
+      isAvailable,
+    } = validationResult.data;
 
     const deliveryPerson = await prisma.deliveryPerson.create({
       data: {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createReviewSchema } from "@/lib/schemas/reviewSchema";
+import { reviewSchema } from "@/lib/schemas/reviewSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import { withLogging } from "@/lib/requestLogger";
@@ -81,12 +81,13 @@ async function POST_handler(req: NextRequest) {
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(createReviewSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(reviewSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 
-    const { userId, restaurantId, orderId, rating, comment } = validationResult.data;
+    const { userId, restaurantId, orderId, rating, comment } =
+      validationResult.data;
 
     // Check if order exists and is delivered
     const order = await prisma.order.findUnique({

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import {
@@ -6,6 +7,12 @@ import {
 } from "@/app/lib/responseHandler";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
+=======
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { sendSuccess, sendError } from "@/lib/responseHandler";
+import { ERROR_CODES } from "@/lib/errorCodes";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
 /**
  * POST /api/files
@@ -28,12 +35,11 @@ export const POST = withLogging(async (req: NextRequest) => {
 
     // Validate required fields
     if (!name || !url || !fileType || !fileSize) {
-      return NextResponse.json(
-        createErrorResponse(
-          "Missing required fields: name, url, fileType, and fileSize are required",
-          "VALIDATION_ERROR"
-        ),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Missing required fields: name, url, fileType, and fileSize are required",
+        undefined,
+        400
       );
     }
 
@@ -50,21 +56,16 @@ export const POST = withLogging(async (req: NextRequest) => {
       },
     });
 
-    return NextResponse.json(
-      createSuccessResponse(file, "File metadata saved successfully"),
-      { status: 201 }
-    );
+    return sendSuccess(file, "File metadata saved successfully", 201);
   } catch (error: unknown) {
     logger.error("error_saving_file_metadata", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to save file metadata",
-        "FILE_METADATA_SAVE_FAILED",
-        errorMessage
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to save file metadata",
+      errorMessage,
+      500
     );
   }
 });
@@ -110,32 +111,28 @@ export const GET = withLogging(async (req: NextRequest) => {
       prisma.file.count({ where }),
     ]);
 
-    return NextResponse.json(
-      createSuccessResponse(
-        {
-          files,
-          pagination: {
-            total,
-            limit,
-            offset,
-            hasMore: offset + limit < total,
-          },
+    return sendSuccess(
+      {
+        files,
+        pagination: {
+          total,
+          limit,
+          offset,
+          hasMore: offset + limit < total,
         },
-        "Files retrieved successfully"
-      ),
-      { status: 200 }
+      },
+      "Files retrieved successfully",
+      200
     );
   } catch (error: unknown) {
     logger.error("error_retrieving_files", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to retrieve files",
-        "FILE_RETRIEVAL_FAILED",
-        errorMessage
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to retrieve files",
+      errorMessage,
+      500
     );
   }
 });
@@ -153,12 +150,11 @@ export const DELETE = withLogging(async (req: NextRequest) => {
     const { ids } = body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return NextResponse.json(
-        createErrorResponse(
-          "Missing or invalid 'ids' field. Provide an array of file IDs.",
-          "VALIDATION_ERROR"
-        ),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Missing or invalid 'ids' field. Provide an array of file IDs.",
+        undefined,
+        400
       );
     }
 
@@ -171,24 +167,20 @@ export const DELETE = withLogging(async (req: NextRequest) => {
       },
     });
 
-    return NextResponse.json(
-      createSuccessResponse(
-        { deletedCount: result.count },
-        `Successfully deleted ${result.count} file(s)`
-      ),
-      { status: 200 }
+    return sendSuccess(
+      { deletedCount: result.count },
+      `Successfully deleted ${result.count} file(s)`,
+      200
     );
   } catch (error: unknown) {
     logger.error("error_deleting_files", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to delete files",
-        "FILE_DELETE_FAILED",
-        errorMessage
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to delete files",
+      errorMessage,
+      500
     );
   }
 });

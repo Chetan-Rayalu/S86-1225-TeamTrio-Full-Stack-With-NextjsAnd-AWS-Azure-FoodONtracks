@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import {
@@ -6,22 +7,38 @@ import {
 } from "@/app/lib/responseHandler";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
+=======
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { sendSuccess, sendError } from "@/lib/responseHandler";
+import { ERROR_CODES } from "@/lib/errorCodes";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
 /**
  * GET /api/files/[id]
  * Retrieves a single file by ID
  */
+<<<<<<< HEAD
 export const GET = withLogging(async (
   req: NextRequest,
   { params }: { params: { id: string } }
 ) => {
+=======
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   try {
-    const fileId = parseInt(params.id);
+    const { id } = await params;
+    const fileId = parseInt(id);
 
     if (isNaN(fileId)) {
-      return NextResponse.json(
-        createErrorResponse("Invalid file ID", "VALIDATION_ERROR"),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Invalid file ID",
+        undefined,
+        400
       );
     }
 
@@ -30,27 +47,24 @@ export const GET = withLogging(async (
     });
 
     if (!file) {
-      return NextResponse.json(
-        createErrorResponse("File not found", "FILE_NOT_FOUND"),
-        { status: 404 }
+      return sendError(
+        ERROR_CODES.FILE_NOT_FOUND,
+        "File not found",
+        undefined,
+        404
       );
     }
 
-    return NextResponse.json(
-      createSuccessResponse(file, "File retrieved successfully"),
-      { status: 200 }
-    );
+    return sendSuccess(file, "File retrieved successfully", 200);
   } catch (error: unknown) {
     logger.error("error_retrieving_file", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to retrieve file",
-        "FILE_RETRIEVAL_FAILED",
-        errorMessage
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to retrieve file",
+      errorMessage,
+      500
     );
   }
 });
@@ -61,15 +75,23 @@ export const GET = withLogging(async (
  */
 export const PATCH = withLogging(async (
   req: NextRequest,
+<<<<<<< HEAD
   { params }: { params: { id: string } }
 ) => {
+=======
+  { params }: { params: Promise<{ id: string }> }
+) {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   try {
-    const fileId = parseInt(params.id);
+    const { id } = await params;
+    const fileId = parseInt(id);
 
     if (isNaN(fileId)) {
-      return NextResponse.json(
-        createErrorResponse("Invalid file ID", "VALIDATION_ERROR"),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Invalid file ID",
+        undefined,
+        400
       );
     }
 
@@ -82,9 +104,11 @@ export const PATCH = withLogging(async (
     });
 
     if (!existingFile) {
-      return NextResponse.json(
-        createErrorResponse("File not found", "FILE_NOT_FOUND"),
-        { status: 404 }
+      return sendError(
+        ERROR_CODES.FILE_NOT_FOUND,
+        "File not found",
+        undefined,
+        404
       );
     }
 
@@ -98,21 +122,16 @@ export const PATCH = withLogging(async (
       },
     });
 
-    return NextResponse.json(
-      createSuccessResponse(updatedFile, "File updated successfully"),
-      { status: 200 }
-    );
+    return sendSuccess(updatedFile, "File updated successfully", 200);
   } catch (error: unknown) {
     logger.error("error_updating_file", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to update file",
-        "FILE_UPDATE_FAILED",
-        errorMessage
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to update file",
+      errorMessage,
+      500
     );
   }
 });
@@ -122,17 +141,27 @@ export const PATCH = withLogging(async (
  * Deletes a file by ID
  * Note: This only deletes the database record, not the actual file from S3
  */
+<<<<<<< HEAD
 export const DELETE = withLogging(async (
   req: NextRequest,
   { params }: { params: { id: string } }
 ) => {
+=======
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   try {
-    const fileId = parseInt(params.id);
+    const { id } = await params;
+    const fileId = parseInt(id);
 
     if (isNaN(fileId)) {
-      return NextResponse.json(
-        createErrorResponse("Invalid file ID", "VALIDATION_ERROR"),
-        { status: 400 }
+      return sendError(
+        ERROR_CODES.VALIDATION_ERROR,
+        "Invalid file ID",
+        undefined,
+        400
       );
     }
 
@@ -142,9 +171,11 @@ export const DELETE = withLogging(async (
     });
 
     if (!existingFile) {
-      return NextResponse.json(
-        createErrorResponse("File not found", "FILE_NOT_FOUND"),
-        { status: 404 }
+      return sendError(
+        ERROR_CODES.FILE_NOT_FOUND,
+        "File not found",
+        undefined,
+        404
       );
     }
 
@@ -153,21 +184,16 @@ export const DELETE = withLogging(async (
       where: { id: fileId },
     });
 
-    return NextResponse.json(
-      createSuccessResponse({ id: fileId }, "File deleted successfully"),
-      { status: 200 }
-    );
+    return sendSuccess({ id: fileId }, "File deleted successfully", 200);
   } catch (error: unknown) {
     logger.error("error_deleting_file", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      createErrorResponse(
-        "Failed to delete file",
-        "FILE_DELETE_FAILED",
-        errorMessage
-      ),
-      { status: 500 }
+    return sendError(
+      ERROR_CODES.DATABASE_ERROR,
+      "Failed to delete file",
+      errorMessage,
+      500
     );
   }
 });

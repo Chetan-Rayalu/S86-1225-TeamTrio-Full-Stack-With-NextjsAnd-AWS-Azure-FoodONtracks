@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { updateRestaurantSchema } from "@/lib/schemas/restaurantSchema";
+import { restaurantUpdateSchema } from "@/lib/schemas/restaurantSchema";
 import { validateData } from "@/lib/validationUtils";
 import { logger } from "@/lib/logger";
 import withLogging from "@/lib/requestLogger";
 
 // GET /api/restaurants/[id] - Get a specific restaurant
+<<<<<<< HEAD
 export const GET = withLogging(async (
   req: NextRequest,
+=======
+export async function GET(
+  _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
@@ -73,8 +78,8 @@ export const PUT = withLogging(async (
     const body = await req.json();
 
     // Validate input using Zod schema
-    const validationResult = validateData(updateRestaurantSchema, body);
-    if (!validationResult.success) {
+    const validationResult = validateData(restaurantUpdateSchema, body);
+    if (!validationResult.success || !validationResult.data) {
       return NextResponse.json(validationResult, { status: 400 });
     }
 
@@ -110,8 +115,13 @@ export const PUT = withLogging(async (
 });
 
 // DELETE /api/restaurants/[id] - Delete a restaurant
+<<<<<<< HEAD
 export const DELETE = withLogging(async (
   req: NextRequest,
+=======
+export async function DELETE(
+  _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
