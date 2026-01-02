@@ -1,9 +1,18 @@
+<<<<<<< HEAD
+import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
+import { createPaymentSchema } from '@/lib/schemas/paymentSchema';
+import { validateData } from '@/lib/validationUtils';
+import { logger } from '@/lib/logger';
+import withLogging from '@/lib/requestLogger';
+=======
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { paymentSchema } from "@/lib/schemas/paymentSchema";
 import { validateData } from "@/lib/validationUtils";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
-export async function POST(request: Request) {
+export const POST = withLogging(async (request: Request) => {
   const body = await request.json();
 
   // For transaction endpoint, we'll validate the payment method and amount only
@@ -86,11 +95,17 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ ok: true, result });
+<<<<<<< HEAD
+  } catch (error: any) {
+    logger.error('transaction_create_error', { error: error?.message || String(error) });
+    return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
+=======
   } catch (error: unknown) {
     const err = error as Error;
     return NextResponse.json(
       { ok: false, error: err.message },
       { status: 400 }
     );
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   }
-}
+});

@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
+<<<<<<< HEAD
+import AWS from "aws-sdk";
+import withLogging from "@/lib/requestLogger";
+=======
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -9,8 +14,7 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
-
-export async function GET(req: Request) {
+export const GET = withLogging(async (req: Request) => {
   const { searchParams } = new URL(req.url);
   const fileName = searchParams.get("fileName");
   const fileType = searchParams.get("fileType");
@@ -28,4 +32,4 @@ export async function GET(req: Request) {
   const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
 
   return NextResponse.json({ uploadUrl });
-}
+});

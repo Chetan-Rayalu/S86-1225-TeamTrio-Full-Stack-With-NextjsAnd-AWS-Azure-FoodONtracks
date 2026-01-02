@@ -1,6 +1,13 @@
 ﻿/** next.config.js */
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,
+<<<<<<< HEAD
+  // Ensure Turbopack uses the project folder as root to resolve path aliases
+  turbopack: {
+    root: __dirname,
+=======
   // swcMinify is now default in Next.js 16 and deprecated as config option
   
   // HTTPS Redirect Configuration
@@ -85,6 +92,7 @@ const nextConfig = {
       // Add your S3 bucket if using AWS
       // 'your-bucket.s3.amazonaws.com',
     ],
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   },
 };
 

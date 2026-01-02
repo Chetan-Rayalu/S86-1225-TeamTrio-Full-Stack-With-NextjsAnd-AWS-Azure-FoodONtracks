@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
 
 // Mock implementation for SWR demo
 
 // GET /api/menu-items/[id]
+<<<<<<< HEAD
+export const GET = withLogging(async (
+  req: NextRequest,
+=======
 export async function GET(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const menuItemId = parseInt(id);
@@ -31,23 +38,23 @@ export async function GET(
       available: true,
     };
 
-    console.log("📡 Fetching menu item:", menuItemId);
+    logger.info("fetch_menu_item", { menuItemId });
 
     return NextResponse.json({ data: mockItem });
   } catch (error) {
-    console.error("Error fetching menu item:", error);
+    logger.error("error_fetching_menu_item", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to fetch menu item" },
       { status: 500 }
     );
   }
-}
+});
 
 // PATCH /api/menu-items/[id]
-export async function PATCH(
+export const PATCH = withLogging(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const menuItemId = parseInt(id);
@@ -63,26 +70,26 @@ export async function PATCH(
       );
     }
 
-    console.log("🔄 Updating menu item:", menuItemId, body);
+    logger.info("update_menu_item", { menuItemId, body });
 
     return NextResponse.json({
       message: "Menu item updated successfully",
       data: { id: menuItemId, ...body },
     });
   } catch (error) {
-    console.error("Error updating menu item:", error);
+    logger.error("error_updating_menu_item", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to update menu item" },
       { status: 500 }
     );
   }
-}
+});
 
 // PUT /api/menu-items/[id]
-export async function PUT(
+export const PUT = withLogging(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const menuItemId = parseInt(id);
@@ -98,26 +105,31 @@ export async function PUT(
       );
     }
 
-    console.log("🔄 Updating menu item (PUT):", menuItemId, body);
+    logger.info("update_menu_item_put", { menuItemId, body });
 
     return NextResponse.json({
       message: "Menu item updated successfully",
       data: { id: menuItemId, ...body },
     });
   } catch (error) {
-    console.error("Error updating menu item:", error);
+    logger.error("error_updating_menu_item_put", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to update menu item" },
       { status: 500 }
     );
   }
-}
+});
 
 // DELETE /api/menu-items/[id]
+<<<<<<< HEAD
+export const DELETE = withLogging(async (
+  req: NextRequest,
+=======
 export async function DELETE(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const menuItemId = parseInt(id);
@@ -132,16 +144,16 @@ export async function DELETE(
       );
     }
 
-    console.log("🗑️ Deleting menu item:", menuItemId);
+    logger.info("delete_menu_item", { menuItemId });
 
     return NextResponse.json({
       message: "Menu item deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting menu item:", error);
+    logger.error("error_deleting_menu_item", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to delete menu item" },
       { status: 500 }
     );
   }
-}
+});

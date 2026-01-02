@@ -1,7 +1,16 @@
 import { NextRequest } from "next/server";
 import { sendEmail, isValidEmail, getEmailStats } from "@/app/lib/emailService";
+<<<<<<< HEAD
+import {
+  createSuccessResponse,
+  createErrorResponse,
+} from "@/app/lib/responseHandler";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
+=======
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 import {
   welcomeEmailTemplate,
   orderConfirmationEmailTemplate,
@@ -22,7 +31,7 @@ import {
  * - template: string (template name: 'welcome', 'order-confirmation', etc.)
  * - templateData: object (data for template)
  */
-export async function POST(req: NextRequest) {
+export const POST = withLogging(async (req: NextRequest) => {
   try {
     const body = await req.json();
     const { to, subject, message, template, templateData, replyTo, cc, bcc } =
@@ -143,21 +152,32 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
+<<<<<<< HEAD
+    logger.error("email_api_error", { error: errorMessage });
+    return NextResponse.json(
+      createErrorResponse(
+        "Failed to process email request",
+        "EMAIL_API_ERROR",
+        errorMessage
+      ),
+      { status: 500 }
+=======
     console.error("Email API error:", errorMessage);
     return sendError(
       ERROR_CODES.INTERNAL_SERVER_ERROR,
       "Failed to process email request",
       errorMessage,
       500
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
     );
   }
-}
+});
 
 /**
  * GET /api/email
  * Get email service configuration and stats
  */
-export async function GET() {
+export const GET = withLogging(async () => {
   try {
     const stats = await getEmailStats();
 
@@ -185,4 +205,4 @@ export async function GET() {
       500
     );
   }
-}
+});

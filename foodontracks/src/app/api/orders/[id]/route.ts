@@ -2,12 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { orderUpdateSchema } from "@/lib/schemas/orderSchema";
 import { validateData } from "@/lib/validationUtils";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
 
 // GET /api/orders/[id]
+<<<<<<< HEAD
+export const GET = withLogging(async (
+  req: NextRequest,
+=======
 export async function GET(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const orderId = parseInt(id);
@@ -49,19 +56,19 @@ export async function GET(
 
     return NextResponse.json({ data: order });
   } catch (error) {
-    console.error("Error fetching order:", error);
+    logger.error("error_fetching_order", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to fetch order" },
       { status: 500 }
     );
   }
-}
+});
 
 // PATCH /api/orders/[id] - Update order status
-export async function PATCH(
+export const PATCH = withLogging(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const orderId = parseInt(id);
@@ -95,6 +102,12 @@ export async function PATCH(
       const updatedOrder = await tx.order.update({
         where: { id: orderId },
         data: {
+<<<<<<< HEAD
+          ...(status ? { status } : {}),
+          ...(specialInstructions !== undefined ? { specialInstructions } : {}),
+          ...(deliveryPersonId !== undefined ? { deliveryPersonId } : {}),
+          ...(status === "DELIVERED" && !existingOrder.actualDeliveryTime ? { actualDeliveryTime: new Date() } : {}),
+=======
           ...(status && { status }),
           ...(specialInstructions !== undefined && { specialInstructions }),
           ...(deliveryPersonId !== undefined && {
@@ -106,6 +119,7 @@ export async function PATCH(
             !existingOrder.actualDeliveryTime && {
               actualDeliveryTime: new Date(),
             }),
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
         },
         include: {
           orderItems: {
@@ -134,19 +148,19 @@ export async function PATCH(
       data: order,
     });
   } catch (error) {
-    console.error("Error updating order:", error);
+    logger.error("error_updating_order", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to update order" },
       { status: 500 }
     );
   }
-}
+});
 
 // PUT /api/orders/[id] - Update order status (alias for PATCH)
-export async function PUT(
+export const PUT = withLogging(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const orderId = parseInt(id);
@@ -219,19 +233,27 @@ export async function PUT(
       data: order,
     });
   } catch (error) {
-    console.error("Error updating order:", error);
+    logger.error("error_updating_order", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to update order" },
       { status: 500 }
     );
   }
+<<<<<<< HEAD
+});
+
+// DELETE /api/orders/[id] - Cancel order
+export const DELETE = withLogging(async (
+  req: NextRequest,
+=======
 }
 
 // DELETE /api/orders/[id] - Cancel order
 export async function DELETE(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const orderId = parseInt(id);
@@ -279,10 +301,10 @@ export async function DELETE(
       data: order,
     });
   } catch (error) {
-    console.error("Error cancelling order:", error);
+    logger.error("error_cancelling_order", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to cancel order" },
       { status: 500 }
     );
   }
-}
+});

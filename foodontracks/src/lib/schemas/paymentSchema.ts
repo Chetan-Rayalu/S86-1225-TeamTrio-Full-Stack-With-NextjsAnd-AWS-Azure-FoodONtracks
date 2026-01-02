@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+export * from "../../app/lib/schemas/paymentSchema";
+=======
 /**
  * Payment Schema for FoodONtracks
  * Zod validation schema for payment data
@@ -31,3 +34,4 @@ export const refundSchema = z.object({
 export type PaymentInput = z.infer<typeof paymentSchema>;
 export type PaymentUpdateInput = z.infer<typeof paymentUpdateSchema>;
 export type RefundInput = z.infer<typeof refundSchema>;
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44

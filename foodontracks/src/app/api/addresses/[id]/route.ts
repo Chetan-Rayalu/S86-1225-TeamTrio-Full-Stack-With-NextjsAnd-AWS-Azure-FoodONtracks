@@ -2,14 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { addressUpdateSchema } from "@/lib/schemas/addressSchema";
 import { validateData } from "@/lib/validationUtils";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
 
 // GET /api/addresses/[id]
+<<<<<<< HEAD
+export const GET = withLogging(async (
+  req: NextRequest,
+=======
 export async function GET(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
+  let idStr: string | undefined = undefined;
   try {
     const { id } = await params;
+    idStr = id;
     const addressId = parseInt(id);
 
     if (isNaN(addressId)) {
@@ -29,21 +38,23 @@ export async function GET(
 
     return NextResponse.json({ data: address });
   } catch (error) {
-    console.error("Error fetching address:", error);
+    logger.error("address_fetch_error", { id: idStr, error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to fetch address" },
       { status: 500 }
     );
   }
-}
+});
 
 // PUT /api/addresses/[id]
-export async function PUT(
+export const PUT = withLogging(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
+  let idStr: string | undefined = undefined;
   try {
     const { id } = await params;
+    idStr = id;
     const addressId = parseInt(id);
 
     if (isNaN(addressId)) {
@@ -70,7 +81,7 @@ export async function PUT(
 
     const address = await prisma.address.update({
       where: { id: addressId },
-      data: validationResult.data,
+      data: validationResult.data as any,
     });
 
     return NextResponse.json({
@@ -78,21 +89,28 @@ export async function PUT(
       data: address,
     });
   } catch (error) {
-    console.error("Error updating address:", error);
+    logger.error("address_update_error", { id: idStr, error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to update address" },
       { status: 500 }
     );
   }
-}
+});
 
 // DELETE /api/addresses/[id]
+<<<<<<< HEAD
+export const DELETE = withLogging(async (
+  req: NextRequest,
+=======
 export async function DELETE(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
+  let idStr: string | undefined = undefined;
   try {
     const { id } = await params;
+    idStr = id;
     const addressId = parseInt(id);
 
     if (isNaN(addressId)) {
@@ -110,10 +128,10 @@ export async function DELETE(
       message: "Address deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting address:", error);
+    logger.error("address_delete_error", { id: idStr, error: error instanceof Error ? error.message : String(error) });
     return NextResponse.json(
       { error: "Failed to delete address" },
       { status: 500 }
     );
   }
-}
+});

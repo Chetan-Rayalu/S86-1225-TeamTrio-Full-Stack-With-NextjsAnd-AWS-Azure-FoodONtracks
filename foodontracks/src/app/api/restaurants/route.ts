@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
+<<<<<<< HEAD
+import { createRestaurantSchema } from "@/lib/schemas/restaurantSchema";
+import { validateData } from "@/lib/validationUtils";
+import { logger } from "@/lib/logger";
+import { withLogging } from "@/lib/requestLogger";
+=======
 import { restaurantCreateSchema } from "@/lib/schemas/restaurantSchema";
 import { validateData } from "@/lib/validationUtils";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
 // GET /api/restaurants - Get all restaurants with pagination
-export async function GET(req: NextRequest) {
+async function GET_handler(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get("page")) || 1;
@@ -70,7 +77,7 @@ export async function GET(req: NextRequest) {
       "Restaurants fetched successfully"
     );
   } catch (error) {
-    console.error("Error fetching restaurants:", error);
+    logger.error("error_fetching_restaurants", { error: String(error) });
     return sendError(
       "Failed to fetch restaurants",
       ERROR_CODES.DATABASE_FAILURE,
@@ -80,8 +87,10 @@ export async function GET(req: NextRequest) {
   }
 }
 
+export const GET = withLogging(GET_handler);
+
 // POST /api/restaurants - Create a new restaurant
-export async function POST(req: NextRequest) {
+async function POST_handler(req: NextRequest) {
   try {
     const body = await req.json();
 
@@ -133,7 +142,7 @@ export async function POST(req: NextRequest) {
 
     return sendSuccess(restaurant, "Restaurant created successfully", 201);
   } catch (error) {
-    console.error("Error creating restaurant:", error);
+    logger.error("error_creating_restaurant", { error: String(error) });
     return sendError(
       "Failed to create restaurant",
       ERROR_CODES.DATABASE_FAILURE,
@@ -142,3 +151,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export const POST = withLogging(POST_handler);

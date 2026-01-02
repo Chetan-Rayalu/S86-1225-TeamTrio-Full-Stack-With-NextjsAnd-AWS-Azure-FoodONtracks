@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+export * from "../app/lib/validationUtils";
+=======
 /**
  * Validation Utilities for FoodONtracks
  * Provides data validation helpers using Zod schemas
@@ -111,3 +114,4 @@ export function parsePositiveFloat(
 
   return parsed;
 }
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44

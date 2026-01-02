@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+export type LogMeta = Record<string, unknown>;
+
+export function genRequestId(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+}
+
+type LogLevel = 'info' | 'error' | 'warn' | 'debug';
+
+=======
 /**
  * Structured Logger Utility
  * Provides consistent, environment-aware logging across the application
@@ -25,6 +35,7 @@ interface LogEntry {
   stack?: string;
 }
 
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 class Logger {
   private isDevelopment = process.env.NODE_ENV === 'development';
   private service = 'foodontracks-api';
@@ -37,6 +48,9 @@ class Logger {
     return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   }
 
+<<<<<<< HEAD
+  private formatLog(level: LogLevel, message: string, meta?: LogMeta, stack?: string) {
+=======
   /**
    * Format log entry as JSON
    */
@@ -55,11 +69,20 @@ class Logger {
       stack?: string;
     } = {}
   ): LogEntry {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
     return {
       level,
       message,
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',
+<<<<<<< HEAD
+      meta,
+      ...(stack ? { stack } : {}),
+    } as const;
+  }
+
+  private output(entry: ReturnType<Logger['formatLog']>): void {
+=======
       service: this.service,
       version: this.version,
       requestId: options.requestId,
@@ -78,16 +101,28 @@ class Logger {
    * Output log to console (CloudWatch/Azure Monitor will capture this)
    */
   private output(entry: LogEntry): void {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
     if (this.isDevelopment) {
-      // Development: Pretty print with colors
-      const colors = {
-        info: '\x1b[36m',     // Cyan
-        error: '\x1b[31m',    // Red
-        warn: '\x1b[33m',     // Yellow
-        debug: '\x1b[35m',    // Magenta
+      const colors: Record<LogLevel, string> = {
+        info: '\x1b[36m',
+        error: '\x1b[31m',
+        warn: '\x1b[33m',
+        debug: '\x1b[35m',
       };
       const reset = '\x1b[0m';
 
+<<<<<<< HEAD
+      // Pretty output in development
+      // eslint-disable-next-line no-console
+      console.log(`${colors[entry.level]}[${entry.level.toUpperCase()}]${reset} ${entry.message}`, entry.meta || '');
+      if ((entry as any).stack) {
+        // eslint-disable-next-line no-console
+        console.error((entry as any).stack);
+      }
+    } else {
+      // Production: emit JSON for log collectors
+      // eslint-disable-next-line no-console
+=======
       const logMsg = `${colors[entry.level]}[${entry.level.toUpperCase()}]${reset} ${entry.message}`;
       console.log(logMsg, entry.meta || '');
 
@@ -96,10 +131,27 @@ class Logger {
       }
     } else {
       // Production: JSON output for CloudWatch/Azure Monitor
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
       console.log(JSON.stringify(entry));
     }
   }
 
+<<<<<<< HEAD
+  info(message: string, meta?: LogMeta) {
+    this.output(this.formatLog('info', message, meta));
+  }
+
+  error(message: string, meta?: LogMeta, stack?: string) {
+    this.output(this.formatLog('error', message, meta, stack));
+  }
+
+  warn(message: string, meta?: LogMeta) {
+    this.output(this.formatLog('warn', message, meta));
+  }
+
+  debug(message: string, meta?: LogMeta) {
+    if (this.isDevelopment) this.output(this.formatLog('debug', message, meta));
+=======
   /**
    * Log info level messages
    */
@@ -188,6 +240,7 @@ class Logger {
       const entry = this.formatLog('debug', message, options);
       this.output(entry);
     }
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   }
 
   /**
@@ -219,5 +272,6 @@ class Logger {
   }
 }
 
-// Export singleton instance
 export const logger = new Logger();
+
+export default logger;

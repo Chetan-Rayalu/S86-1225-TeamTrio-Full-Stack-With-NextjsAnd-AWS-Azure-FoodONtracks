@@ -1,16 +1,34 @@
+<<<<<<< HEAD
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/app/lib/prisma";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+} from "@/app/lib/responseHandler";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
+=======
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
 /**
  * GET /api/files/[id]
  * Retrieves a single file by ID
  */
+<<<<<<< HEAD
+export const GET = withLogging(async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+=======
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   try {
     const { id } = await params;
     const fileId = parseInt(id);
@@ -39,7 +57,7 @@ export async function GET(
 
     return sendSuccess(file, "File retrieved successfully", 200);
   } catch (error: unknown) {
-    console.error("Error retrieving file:", error);
+    logger.error("error_retrieving_file", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     return sendError(
@@ -49,16 +67,21 @@ export async function GET(
       500
     );
   }
-}
+});
 
 /**
  * PATCH /api/files/[id]
  * Updates file metadata
  */
-export async function PATCH(
+export const PATCH = withLogging(async (
   req: NextRequest,
+<<<<<<< HEAD
+  { params }: { params: { id: string } }
+) => {
+=======
   { params }: { params: Promise<{ id: string }> }
 ) {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   try {
     const { id } = await params;
     const fileId = parseInt(id);
@@ -101,7 +124,7 @@ export async function PATCH(
 
     return sendSuccess(updatedFile, "File updated successfully", 200);
   } catch (error: unknown) {
-    console.error("Error updating file:", error);
+    logger.error("error_updating_file", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     return sendError(
@@ -111,17 +134,24 @@ export async function PATCH(
       500
     );
   }
-}
+});
 
 /**
  * DELETE /api/files/[id]
  * Deletes a file by ID
  * Note: This only deletes the database record, not the actual file from S3
  */
+<<<<<<< HEAD
+export const DELETE = withLogging(async (
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) => {
+=======
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   try {
     const { id } = await params;
     const fileId = parseInt(id);
@@ -156,7 +186,7 @@ export async function DELETE(
 
     return sendSuccess({ id: fileId }, "File deleted successfully", 200);
   } catch (error: unknown) {
-    console.error("Error deleting file:", error);
+    logger.error("error_deleting_file", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     return sendError(
@@ -166,4 +196,4 @@ export async function DELETE(
       500
     );
   }
-}
+});

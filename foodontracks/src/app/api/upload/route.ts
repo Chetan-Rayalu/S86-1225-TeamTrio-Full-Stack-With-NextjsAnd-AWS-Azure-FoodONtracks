@@ -7,8 +7,17 @@ import {
   generateUniqueFilename,
   MAX_FILE_SIZE,
 } from "@/app/lib/fileValidation";
+<<<<<<< HEAD
+import {
+  createSuccessResponse,
+  createErrorResponse,
+} from "@/app/lib/responseHandler";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
+=======
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
 
 /**
  * POST /api/upload
@@ -27,7 +36,7 @@ import { ERROR_CODES } from "@/lib/errorCodes";
  * - publicURL: string (public URL after upload)
  * - expiresIn: number (URL expiry time in seconds)
  */
-export async function POST(req: NextRequest) {
+export const POST = withLogging(async (req: NextRequest) => {
   try {
     const body = await req.json();
     const { filename, fileType, fileSize, entityType, entityId } = body;
@@ -104,7 +113,7 @@ export async function POST(req: NextRequest) {
       200
     );
   } catch (error: unknown) {
-    console.error("Error generating pre-signed URL:", error);
+    logger.error("upload_presign_error", { error: String(error) });
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     return sendError(
@@ -114,13 +123,13 @@ export async function POST(req: NextRequest) {
       500
     );
   }
-}
+});
 
 /**
  * GET /api/upload
  * Returns upload configuration and limits
  */
-export async function GET() {
+export const GET = withLogging(async () => {
   try {
     return sendSuccess(
       {
@@ -149,4 +158,4 @@ export async function GET() {
       500
     );
   }
-}
+});

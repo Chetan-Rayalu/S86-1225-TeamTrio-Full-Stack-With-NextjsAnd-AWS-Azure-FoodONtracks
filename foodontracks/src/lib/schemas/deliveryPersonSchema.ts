@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+export * from "../../app/lib/schemas/deliveryPersonSchema";
+=======
 /**
  * Delivery Person Schema for FoodONtracks
  * Zod validation schema for delivery person data
@@ -36,3 +39,4 @@ export type DeliveryPersonLocationUpdate = z.infer<
 export type DeliveryPersonAvailabilityUpdate = z.infer<
   typeof deliveryPersonAvailabilitySchema
 >;
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44

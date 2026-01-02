@@ -2,12 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { restaurantUpdateSchema } from "@/lib/schemas/restaurantSchema";
 import { validateData } from "@/lib/validationUtils";
+import { logger } from "@/lib/logger";
+import withLogging from "@/lib/requestLogger";
 
 // GET /api/restaurants/[id] - Get a specific restaurant
+<<<<<<< HEAD
+export const GET = withLogging(async (
+  req: NextRequest,
+=======
 export async function GET(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const restaurantId = parseInt(id);
@@ -44,19 +51,19 @@ export async function GET(
 
     return NextResponse.json({ data: restaurant });
   } catch (error) {
-    console.error("Error fetching restaurant:", error);
+    logger.error("error_fetching_restaurant", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to fetch restaurant" },
       { status: 500 }
     );
   }
-}
+});
 
 // PUT /api/restaurants/[id] - Update a restaurant
-export async function PUT(
+export const PUT = withLogging(async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const restaurantId = parseInt(id);
@@ -99,19 +106,24 @@ export async function PUT(
       data: restaurant,
     });
   } catch (error) {
-    console.error("Error updating restaurant:", error);
+    logger.error("error_updating_restaurant", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to update restaurant" },
       { status: 500 }
     );
   }
-}
+});
 
 // DELETE /api/restaurants/[id] - Delete a restaurant
+<<<<<<< HEAD
+export const DELETE = withLogging(async (
+  req: NextRequest,
+=======
 export async function DELETE(
   _req: NextRequest,
+>>>>>>> 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) {
+) => {
   try {
     const { id } = await params;
     const restaurantId = parseInt(id);
@@ -144,10 +156,10 @@ export async function DELETE(
       message: "Restaurant deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting restaurant:", error);
+    logger.error("error_deleting_restaurant", { error: String(error) });
     return NextResponse.json(
       { error: "Failed to delete restaurant" },
       { status: 500 }
     );
   }
-}
+});
