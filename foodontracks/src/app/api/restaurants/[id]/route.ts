@@ -9,9 +9,8 @@ import withLogging from "@/lib/requestLogger";
 
 export async function GET(
   _req: NextRequest,
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) => {
+) {
   try {
     const { id } = await params;
     const restaurantId = parseInt(id);
@@ -115,9 +114,8 @@ export const PUT = withLogging(async (
 
 export async function DELETE(
   _req: NextRequest,
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) => {
+) {
   try {
     const { id } = await params;
     const restaurantId = parseInt(id);
@@ -156,4 +154,3 @@ export async function DELETE(
       { status: 500 }
     );
   }
-});

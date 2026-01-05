@@ -55,14 +55,6 @@ export function middleware(req: NextRequest) {
     }
 
     if (!token) {
-  // Generate or reuse a request id for correlation
-  const existingReqId = req.headers.get("x-request-id");
-  const requestId =
-    existingReqId ||
-    (typeof globalThis !== "undefined" && (globalThis as any).crypto && "randomUUID" in (globalThis as any).crypto
-      ? (globalThis as any).crypto.randomUUID()
-      : `${Date.now()}-${Math.floor(Math.random() * 1e6)}`);
-
       return NextResponse.json(
         {
           success: false,
@@ -71,21 +63,19 @@ export function middleware(req: NextRequest) {
         },
         { status: 401 }
       );
-    return NextResponse.redirect(httpsUrl, { status: 308, headers: { "x-request-id": requestId } });
+    }
 
     try {
-      const decoded = jwt.verify(
-        token,
-        ACCESS_TOKEN_SECRET
-      ) as jwt.JwtPayload & {
-        type: string;
-        userId: number;
-        email: string;
-        role: string;
-      };
+      const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as
+        | (jwt.JwtPayload & {
+            type?: string;
+            userId?: number;
+            email?: string;
+            role?: string;
+          })
+        | null;
 
-      // Check token type
-    return NextResponse.next({ request: { headers: { "x-request-id": requestId } } });
+      if (!decoded || (decoded.type && decoded.type !== "access")) {
         return NextResponse.json(
           { success: false, message: "Invalid token type" },
           { status: 401 }

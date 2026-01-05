@@ -353,6 +353,37 @@ aws acm describe-certificate --certificate-arn <arn> --region us-east-1
 
 ---
 
+## 🧪 Testing
+
+Unit and integration tests use Jest and React Testing Library (RTL). The app includes sample tests under `__tests__/` and a Jest configuration at `jest.config.js` which enforces a global coverage threshold of 80%.
+
+- Run tests:
+
+```bash
+cd foodontracks
+npm test
+```
+
+- Run with coverage report:
+
+```bash
+cd foodontracks
+npm test -- --coverage
+```
+
+- CI: A GitHub Actions workflow `.github/workflows/ci.yml` runs the same commands on push and pull requests and uploads the coverage artifact.
+
+Notes:
+- Keep tests behavior-driven to survive refactors.
+- Add tests under `__tests__/` or alongside components in `src/`.
+- The Jest setup file (`jest.setup.js`) registers `@testing-library/jest-dom` matchers for readable assertions.
+
+Reflection:
+- Unit tests offer fast, focused feedback on logic and components.
+- Integration tests validate module interactions and mock external APIs.
+- E2E (Cypress/Playwright) is recommended for full user-journey verification.
+
+
 ## 📊 Cloud Monitoring & Logging
 
 ### Overview

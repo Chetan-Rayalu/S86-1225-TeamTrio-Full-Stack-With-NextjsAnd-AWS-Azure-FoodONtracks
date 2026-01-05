@@ -3,7 +3,7 @@ import { sendEmail, isValidEmail, getEmailStats } from "@/app/lib/emailService";
 
 import { sendSuccess, sendError } from "@/lib/responseHandler";
 import { ERROR_CODES } from "@/lib/errorCodes";
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
+ 
 import {
   welcomeEmailTemplate,
   orderConfirmationEmailTemplate,
@@ -152,7 +152,6 @@ export const POST = withLogging(async (req: NextRequest) => {
       "Failed to process email request",
       errorMessage,
       500
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
     );
   }
 });

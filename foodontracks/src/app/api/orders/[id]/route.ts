@@ -9,9 +9,8 @@ import withLogging from "@/lib/requestLogger";
 
 export async function GET(
   _req: NextRequest,
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) => {
+) {
   try {
     const { id } = await params;
     const orderId = parseInt(id);
@@ -59,7 +58,7 @@ export async function GET(
       { status: 500 }
     );
   }
-});
+
 
 // PATCH /api/orders/[id] - Update order status
 export const PATCH = withLogging(async (
@@ -85,11 +84,9 @@ export const PATCH = withLogging(async (
     // Check if order exists
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },
-    });
-
-    if (!existingOrder) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
+    }
+
 
     const { status, specialInstructions, deliveryPersonId } =
       validationResult.data;
@@ -107,11 +104,10 @@ export const PATCH = withLogging(async (
               ? { connect: { id: parseInt(deliveryPersonId) } }
               : { disconnect: true },
           }),
-          ...(status === "DELIVERED" &&
+            ...(status === "DELIVERED" &&
             !existingOrder.actualDeliveryTime && {
               actualDeliveryTime: new Date(),
             }),
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
         },
         include: {
           orderItems: {
@@ -146,7 +142,6 @@ export const PATCH = withLogging(async (
       { status: 500 }
     );
   }
-});
 
 // PUT /api/orders/[id] - Update order status (alias for PATCH)
 export const PUT = withLogging(async (
@@ -237,7 +232,6 @@ export const PUT = withLogging(async (
 // DELETE /api/orders/[id] - Cancel order
 export async function DELETE(
   _req: NextRequest,
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
 ) => {
   try {

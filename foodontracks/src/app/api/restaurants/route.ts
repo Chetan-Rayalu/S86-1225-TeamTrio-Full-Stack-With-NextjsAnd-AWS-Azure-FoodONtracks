@@ -5,7 +5,7 @@ import { ERROR_CODES } from "@/lib/errorCodes";
 
 import { restaurantCreateSchema } from "@/lib/schemas/restaurantSchema";
 import { validateData } from "@/lib/validationUtils";
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
+ 
 
 // GET /api/restaurants - Get all restaurants with pagination
 async function GET_handler(req: NextRequest) {
