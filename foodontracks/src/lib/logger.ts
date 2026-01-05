@@ -3,6 +3,10 @@
  * Structured Logger Utility
  * Provides consistent, environment-aware logging across the application
  * Supports JSON output for production monitoring (CloudWatch/Azure Monitor)
+/**
+ * Structured Logger Utility
+ * Provides consistent, environment-aware logging across the application
+ * Supports JSON output for production monitoring (CloudWatch/Azure Monitor)
  * Includes correlation IDs for distributed tracing
  */
 
@@ -26,7 +30,6 @@ interface LogEntry {
   stack?: string;
 }
 
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
 class Logger {
   private isDevelopment = process.env.NODE_ENV === 'development';
   private service = 'foodontracks-api';
@@ -38,7 +41,6 @@ class Logger {
   generateRequestId(): string {
     return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
   }
-
 
   /**
    * Format log entry as JSON
@@ -58,7 +60,6 @@ class Logger {
       stack?: string;
     } = {}
   ): LogEntry {
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
     return {
       level,
       message,
@@ -83,7 +84,6 @@ class Logger {
    * Output log to console (CloudWatch/Azure Monitor will capture this)
    */
   private output(entry: LogEntry): void {
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
     if (this.isDevelopment) {
       const colors: Record<LogLevel, string> = {
         info: '\x1b[36m',
@@ -93,7 +93,6 @@ class Logger {
       };
       const reset = '\x1b[0m';
 
-
       const logMsg = `${colors[entry.level]}[${entry.level.toUpperCase()}]${reset} ${entry.message}`;
       console.log(logMsg, entry.meta || '');
 
@@ -102,11 +101,9 @@ class Logger {
       }
     } else {
       // Production: JSON output for CloudWatch/Azure Monitor
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
       console.log(JSON.stringify(entry));
     }
   }
-
 
   /**
    * Log info level messages
@@ -196,7 +193,6 @@ class Logger {
       const entry = this.formatLog('debug', message, options);
       this.output(entry);
     }
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   }
 
   /**
@@ -229,5 +225,7 @@ class Logger {
 }
 
 export const logger = new Logger();
+
+export default logger;
 
 export default logger;

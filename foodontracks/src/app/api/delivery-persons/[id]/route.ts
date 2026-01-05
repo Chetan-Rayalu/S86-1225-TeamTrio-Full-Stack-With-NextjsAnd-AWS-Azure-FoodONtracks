@@ -9,9 +9,8 @@ import withLogging from "@/lib/requestLogger";
 
 export async function GET(
   _request: NextRequest,
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) => {
+) {
   try {
     const { id } = await params;
     const deliveryPersonId = parseInt(id);
@@ -68,7 +67,6 @@ export async function GET(
       { status: 500 }
     );
   }
-});
 
 // PUT /api/delivery-persons/[id] - Update delivery person
 export const PUT = withLogging(async (
@@ -152,15 +150,13 @@ export const PUT = withLogging(async (
       { status: 500 }
     );
   }
-});
 
 // DELETE /api/delivery-persons/[id] - Delete delivery person
 
 export async function DELETE(
   _request: NextRequest,
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
   { params }: { params: Promise<{ id: string }> }
-) => {
+) {
   try {
     const { id } = await params;
     const deliveryPersonId = parseInt(id);
@@ -224,4 +220,3 @@ export async function DELETE(
       { status: 500 }
     );
   }
-});

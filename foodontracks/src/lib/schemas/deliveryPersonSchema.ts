@@ -37,4 +37,4 @@ export type DeliveryPersonLocationUpdate = z.infer<
 export type DeliveryPersonAvailabilityUpdate = z.infer<
   typeof deliveryPersonAvailabilitySchema
 >;
- 9403793faf03c4376ebcdf0fc73728d4ea910a44
+
