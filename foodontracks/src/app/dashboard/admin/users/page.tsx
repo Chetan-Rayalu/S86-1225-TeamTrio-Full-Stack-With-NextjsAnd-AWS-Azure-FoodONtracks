@@ -99,7 +99,7 @@ export default function AdminUsersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 via-orange-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-yellow-50 via-orange-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
           <p className="text-gray-700 dark:text-gray-300">Loading users...</p>
@@ -109,7 +109,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen bg-linear-to-br from-yellow-50 via-orange-50 to-white dark:from-gray-950 dark:via-gray-900 dark:to-gray-900">
       <header className="bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-yellow-200 dark:border-yellow-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center gap-4">
@@ -162,7 +162,7 @@ export default function AdminUsersPage() {
               onClick={() => handleRoleFilterChange('')}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 roleFilter === ''
-                  ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-md'
+                  ? 'bg-linear-to-r from-yellow-400 to-orange-500 text-white shadow-md'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700'
               }`}
             >
@@ -303,7 +303,7 @@ export default function AdminUsersPage() {
                     setCurrentPage((prev) => Math.min(pagination.pages, prev + 1))
                   }
                   disabled={currentPage === pagination.pages}
-                  className="px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md"
+                  className="px-4 py-2 rounded-full text-sm font-medium bg-linear-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md"
                 >
                   Next
                 </button>
