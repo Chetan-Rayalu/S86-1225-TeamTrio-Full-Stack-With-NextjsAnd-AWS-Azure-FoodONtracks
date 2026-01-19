@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getAccessToken } from '@/app/lib/jwtService';
 import jwt from 'jsonwebtoken';
 import dbConnect from '@/lib/mongodb';
-import { Order } from '@/models/Order';
+import { Order, Restaurant, User } from '@/models';
 import { UserRole } from '@/types/user';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';

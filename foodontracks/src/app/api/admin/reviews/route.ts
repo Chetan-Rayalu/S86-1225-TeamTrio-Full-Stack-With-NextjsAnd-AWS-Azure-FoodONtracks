@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import dbConnect from '@/lib/mongodb';
 
 export const runtime = "nodejs";
-import { Review } from '@/models/Review';
+import { Review, Restaurant, User } from '@/models';
 import { UserRole } from '@/types/user';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';

@@ -79,15 +79,20 @@ function classifyError(error: any): ErrorType {
     return error.type;
   }
 
-  // Prisma errors
-  if (error?.name === 'PrismaClientKnownRequestError') {
-    if (error.code === 'P2025') {
-      return ErrorType.NOT_FOUND_ERROR;
-    }
-    if (error.code === 'P2002') {
-      return ErrorType.CONFLICT_ERROR;
+  // MongoDB errors
+  if (error?.name === 'MongoError' || error?.name === 'MongoServerError') {
+    if (error.code === 11000) {
+      return ErrorType.CONFLICT_ERROR; // Duplicate key
     }
     return ErrorType.DATABASE_ERROR;
+  }
+
+  // Mongoose errors
+  if (error?.name === 'ValidationError') {
+    return ErrorType.VALIDATION_ERROR;
+  }
+  if (error?.name === 'CastError') {
+    return ErrorType.VALIDATION_ERROR;
   }
 
   // JWT errors
