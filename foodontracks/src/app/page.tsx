@@ -99,6 +99,67 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Problem & Solution Section */}
+      <section className="py-20 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            {/* Problem Statement */}
+            <div className="bg-gradient-to-br from-red-50 to-orange-50 dark:from-gray-800 dark:to-gray-900 border-l-4 border-red-500 rounded-xl p-8 mb-8 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                  <Train className="w-6 h-6 text-white" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-red-700 dark:text-red-400 mb-3">The Challenge</h3>
+                  <p className="text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+                    Indian railway catering services face food safety complaints due to untracked suppliers. 
+                    What kind of digital traceability model could ensure hygiene and compliance?
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Solution */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 border-l-4 border-green-500 rounded-xl p-8 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                  <CheckCircle className="w-6 h-6 text-white" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-3">Our Solution</h3>
+                  <p className="text-lg text-gray-800 dark:text-gray-200 leading-relaxed mb-4">
+                    <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600">FoodONtracks</span> implements 
+                    a comprehensive digital traceability system that ensures complete transparency and accountability:
+                  </p>
+                  <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-1" />
+                      <span><strong>Real-time Tracking:</strong> Track every order from preparation to delivery with live GPS monitoring</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-1" />
+                      <span><strong>Verified Suppliers:</strong> All restaurants and suppliers undergo strict verification and compliance checks</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-1" />
+                      <span><strong>Quality Assurance:</strong> Customer ratings and reviews ensure continuous quality improvement</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-1" />
+                      <span><strong>Digital Audit Trail:</strong> Complete delivery history with timestamps and delivery agent details</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-1" />
+                      <span><strong>Hygiene Compliance:</strong> Batch tracking system ensures food safety standards are maintained</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4">
