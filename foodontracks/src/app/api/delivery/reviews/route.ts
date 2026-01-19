@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getAccessToken } from '@/app/lib/jwtService';
 import jwt from 'jsonwebtoken';
 import dbConnect from '@/lib/mongodb';
-import { Review } from '@/models/Review';
+import { Review, Restaurant, User, Order } from '@/models';
 import { logger } from '@/lib/logger';
 import { UserRole } from '@/types/user';
 
