@@ -83,13 +83,13 @@ export default function DeliveryHistoryPage() {
             <div key={order._id} className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="font-bold text-lg">Order #{order.orderNumber || order.batchNumber}</h3>
-                  <p className="text-sm text-gray-600">{order.restaurantId?.name}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Delivered on {new Date(order.createdAt).toLocaleDateString()}
+                  <h3 className="font-bold text-lg text-gray-900">Order #{order.orderNumber || order.batchNumber}</h3>
+                  <p className="text-sm text-gray-900">{order.restaurantId?.name}</p>
+                  <p className="text-sm text-gray-900 mt-1 font-medium">
+                    Delivered on {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}
                   </p>
                 </div>
-                <Badge variant="success">Delivered</Badge>
+                <Badge variant="success">delivered</Badge>
               </div>
 
               {/* Customer Rating Display */}
@@ -136,16 +136,16 @@ export default function DeliveryHistoryPage() {
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Delivery Address</p>
-                  <p className="font-medium text-sm">{order.deliveryAddress}</p>
+                  <p className="text-sm font-semibold text-gray-700">Delivery Address</p>
+                  <p className="font-medium text-sm text-gray-900">{order.deliveryAddress}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Amount</p>
+                  <p className="text-sm font-semibold text-gray-700">Amount</p>
                   <p className="font-bold text-green-600">₹{order.totalAmount.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Items</p>
-                  <p className="font-medium text-sm">
+                  <p className="text-sm font-semibold text-gray-700">Items</p>
+                  <p className="font-medium text-sm text-gray-900">
                     {order.items.reduce((sum, item) => sum + item.quantity, 0)} items
                   </p>
                 </div>
